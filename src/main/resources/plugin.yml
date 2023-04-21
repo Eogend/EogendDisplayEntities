@@ -1,0 +1,17 @@
+name: EogendDisplayEntities
+main: fr.lavapower.eogenddisplayentities.EogendDisplayEntities
+version: 1.1.0
+author: LavaPower
+api-version: 1.19
+prefix: EogendDisplayEntities
+
+commands:
+  eogenddisplayentities:
+    usage: /<command>
+    aliases:
+      - displayentities
+      - ede
+      - eogendde
+      - edisplayentities
+    description: Gestion des Display Entities d'Eogend
+    permission: EDE
