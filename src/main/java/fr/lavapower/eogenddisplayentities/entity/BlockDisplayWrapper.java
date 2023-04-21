@@ -16,9 +16,27 @@ public class BlockDisplayWrapper extends DisplayWrapper {
         this.entity = entity;
     }
 
-    public void modify(EntityManager manager, CommandSender sender, String name, String param, String[] args) {
+    public void get(CommandSender sender, String param) {
+        if(param == null) {
+            sender.sendMessage("Paramètres possibles : position, rotation, scale, glow, world, block");
+            return;
+        }
+
         switch (param) {
-            case "position", "world" -> super.modify(manager, sender, name, param, args);
+            case "position", "world", "rotation", "scale", "glow" -> super.get(sender, param);
+            case "block" -> sender.sendMessage("Bloc : " + entity.getBlock().getMaterial().name());
+            default -> sender.sendMessage("Paramètres possibles : position, rotation, scale, glow, world, block");
+        }
+    }
+
+    public void modify(EntityManager manager, CommandSender sender, String name, String param, String[] args) {
+        if(param == null) {
+            sender.sendMessage("Paramètres possibles : position, rotation, scale, glow, world, block");
+            return;
+        }
+
+        switch (param) {
+            case "position", "world", "rotation", "scale", "glow" -> super.modify(manager, sender, name, param, args);
             case "block" -> {
                 if (args.length < 1)
                     sender.sendMessage("Bloc invalide");

@@ -12,6 +12,25 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public abstract class DisplayWrapper {
+    public void get(CommandSender sender, String param) {
+        switch (param) {
+            case "rotation" -> {
+                AxisAngle4f leftRotation = new AxisAngle4f(getTransformation().getLeftRotation());
+                sender.sendMessage("Rotation : " + Math.toDegrees(leftRotation.angle) + "(" + leftRotation.x + ", " + leftRotation.y + ", " + leftRotation.z + ")");
+            }
+            case "glow" -> sender.sendMessage("Glow : " + getEntity().isGlowing());
+            case "scale" -> {
+                Vector3f scale = getTransformation().getScale();
+                sender.sendMessage("Scale : (" + scale.x + ", " + scale.y + ", " + scale.z + ")");
+            }
+            case "position" -> {
+                Location location = getLocation();
+                sender.sendMessage("Position : (" + location.getX() + ", " + location.getY() + ", " + location.getZ() + ")");
+            }
+            case "world" -> sender.sendMessage("Monde : " + getWorld().getName());
+        }
+    }
+
     public void modify(EntityManager manager, CommandSender sender, String name, String param, String[] args) {
         switch (param) {
             case "rotation" -> {

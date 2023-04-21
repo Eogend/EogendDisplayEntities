@@ -11,10 +11,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -31,6 +28,32 @@ public class EntityManager {
     public void moveEntity(String name, DisplayWrapper wrapper) {
         plugin.getStorage().removeEntity(wrapper);
         plugin.getStorage().saveNameForEntity(name, wrapper);
+    }
+
+    public boolean getEntity(CommandSender sender, String type, String name, String param) {
+        switch (type) {
+            case "block" -> {
+                if (!blockDisplayWrappers.containsKey(name))
+                    return false;
+                blockDisplayWrappers.get(name).get(sender, param);
+                return true;
+            }
+            case "item" -> {
+                if (!itemDisplayWrappers.containsKey(name))
+                    return false;
+                itemDisplayWrappers.get(name).get(sender, param);
+                return true;
+            }
+            case "text" -> {
+                if (!textDisplayWrappers.containsKey(name))
+                    return false;
+                textDisplayWrappers.get(name).get(sender, param);
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
     public boolean modifyEntity(CommandSender sender, String type, String name, String param, String[] args) {
@@ -57,6 +80,18 @@ public class EntityManager {
                 return false;
             }
         }
+    }
+
+    public Set<String> getBlockNames() {
+        return blockDisplayWrappers.keySet();
+    }
+
+    public Set<String> getItemNames() {
+        return itemDisplayWrappers.keySet();
+    }
+
+    public Set<String> getTextNames() {
+        return textDisplayWrappers.keySet();
     }
 
     public List<String> getNames() {

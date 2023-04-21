@@ -83,26 +83,49 @@ public class EDECommand implements CommandExecutor, TabExecutor {
                     }
                 }
 
+                // GET PART
+                case "get" -> {
+                    if(args.length < 3)
+                        sender.sendMessage("Usage : /" + label + " get <type> <name> <param>");
+                    else {
+                        if(args.length == 3) {
+                            var temp = new String[4];
+                            System.arraycopy(args, 0, temp, 0, args.length);
+                            args = temp;
+                        }
+
+                        if (!plugin.getManager().getEntity(sender, args[1], args[2], args[3]))
+                            sender.sendMessage("Entité non trouvée : Nom inconnu");
+                    }
+                }
+
                 // OTHER PART
                 default ->
-                        sender.sendMessage("Usage : /" + label + " <create|remove|modify> [<type>] <name> [<param>] [<value>]");
+                        sender.sendMessage("Usage : /" + label + " <create|remove|modify|get|list> [<type>] [<name>] [<param>] [<value>]");
             }
         }
         else
-            sender.sendMessage("Usage : /"+label+" <create|remove> [<type>] <name>");
+            sender.sendMessage("Usage : /"+label+" <create|remove|modify|get|list> [<type>] [<name>] [<param>] [<value>]");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length == 1)
-            return Stream.of("create", "remove", "list", "modify").filter(x -> args[0].isEmpty() || x.toLowerCase().startsWith(args[0].toLowerCase())).toList();
-        else if(args.length == 2 && (args[0].equals("create") || args[0].equals("modify")))
+            return Stream.of("create", "remove", "list", "modify", "get").filter(x -> args[0].isEmpty() || x.toLowerCase().startsWith(args[0].toLowerCase())).toList();
+        else if(args.length == 2 && (args[0].equals("create") || args[0].equals("modify") || args[0].equals("get")))
             return Stream.of("block", "item", "text").filter(x -> args[1].isEmpty() || x.toLowerCase().startsWith(args[1].toLowerCase())).toList();
         else if(args.length == 2 && args[0].equals("remove"))
             return plugin.getManager().getNames().stream().filter(x -> args[1].isEmpty() || x.toLowerCase().startsWith(args[1].toLowerCase())).toList();
-        else if(args.length == 3 && args[0].equals("modify"))
+        else if(args.length == 3 && (args[0].equals("modify") || args[0].equals("get"))) {
+            if(args[1].equals("block"))
+                return plugin.getManager().getBlockNames().stream().filter(x -> args[2].isEmpty() || x.toLowerCase().startsWith(args[2].toLowerCase())).toList();
+            if(args[1].equals("item"))
+                return plugin.getManager().getItemNames().stream().filter(x -> args[2].isEmpty() || x.toLowerCase().startsWith(args[2].toLowerCase())).toList();
+            if(args[1].equals("text"))
+                return plugin.getManager().getTextNames().stream().filter(x -> args[2].isEmpty() || x.toLowerCase().startsWith(args[2].toLowerCase())).toList();
             return plugin.getManager().getNames().stream().filter(x -> args[2].isEmpty() || x.toLowerCase().startsWith(args[2].toLowerCase())).toList();
+        }
         else
             return null;
     }
